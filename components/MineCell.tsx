@@ -24,8 +24,18 @@ const MineCell: NextPage<Props> = ({ col, row, action, type, num }) => {
             line-height: 50px;
           }
 
+          .default:hover {
+            background-color: #eee;
+            cursor: pointer;
+          }
+
           .mine {
             background-color: #f00;
+            line-height: 60px;
+          }
+
+          .mine.default:hover {
+            background-color: #f74242;
           }
         `}
       </style>
