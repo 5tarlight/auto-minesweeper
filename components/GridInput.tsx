@@ -8,9 +8,14 @@ export interface Grid {
 interface Props {
   grid: Grid;
   setGrid: (grid: Grid) => void;
+  initGrid: () => void;
 }
 
-const GridInput: NextPage<Props> = ({ grid: { row, col }, setGrid }) => {
+const GridInput: NextPage<Props> = ({
+  grid: { row, col },
+  setGrid,
+  initGrid,
+}) => {
   return (
     <>
       <input
@@ -18,7 +23,7 @@ const GridInput: NextPage<Props> = ({ grid: { row, col }, setGrid }) => {
         placeholder="row"
         value={row}
         onChange={({ target: { value } }) =>
-          setGrid({ col, row: Math.max(0, parseInt(value)) })
+          setGrid({ col, row: Math.max(1, parseInt(value)) })
         }
       />
       <span>X</span>
@@ -27,9 +32,10 @@ const GridInput: NextPage<Props> = ({ grid: { row, col }, setGrid }) => {
         placeholder="col"
         value={col}
         onChange={({ target: { value } }) =>
-          setGrid({ row, col: Math.max(0, parseInt(value)) })
+          setGrid({ row, col: Math.max(1, parseInt(value)) })
         }
       />
+      <button onClick={initGrid}>Re-generate</button>
 
       <style jsx>
         {`
