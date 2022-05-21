@@ -88,6 +88,17 @@ const Home: NextPage = () => {
     setGridState(tempGridState);
   };
 
+  const revealCellClick = (row: number, col: number) => {
+    revealCell(row, col);
+
+    if (gridState[row][col].near == 0) {
+      revealNearCell(row - 1, col);
+      revealNearCell(row, col - 1);
+      revealNearCell(row, col + 1);
+      revealNearCell(row + 1, col);
+    }
+  };
+
   const revealCell = (row: number, col: number) => {
     if (gridState[row][col].action !== "default") return;
 
@@ -95,6 +106,17 @@ const Home: NextPage = () => {
     tempGridState[row][col].action = "reveal";
 
     if (tempGridState[row][col].type === "safe") setGridState(tempGridState);
+  };
+
+  const revealNearCell = (row: number, col: number) => {
+    if (row < 0 || col < 0 || row >= grid.row || col >= grid.col) return;
+    if (gridState[row][col].action !== "default") return;
+
+    const tempGridState = [...gridState];
+
+    if (tempGridState[row][col].near == 0) {
+      revealCellClick(row, col);
+    }
   };
 
   const toggleFlag = (row: number, col: number) => {
@@ -121,7 +143,7 @@ const Home: NextPage = () => {
         col={grid.col}
         row={grid.row}
         gridState={gridState}
-        revealCell={revealCell}
+        revealCell={revealCellClick}
         toggleFlag={toggleFlag}
       />
     </>

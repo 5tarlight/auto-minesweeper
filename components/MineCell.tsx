@@ -26,7 +26,10 @@ const MineCell: NextPage<Props> = ({
             e.preventDefault();
             toggleFlag(row, col);
           }}
-        ></div>
+        >
+          {type === "mine" && "*"}
+          {type === "safe" && (near === 0 ? "" : near)}
+        </div>
       )}
       {action === "reveal" && (
         <div className={className}>

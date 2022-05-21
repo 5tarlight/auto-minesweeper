@@ -63,6 +63,8 @@ const MineGrid: NextPage<Props> = ({
             grid-template-columns: repeat(${col}, 50px);
             grid-template-rows: repeat(${row}, 50px);
             margin: 1rem 2rem;
+            border: 1px solid black;
+            width: fit-content;
           }
         `}
       </style>
