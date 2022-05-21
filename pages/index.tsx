@@ -100,6 +100,7 @@ const Home: NextPage = () => {
   };
 
   const revealCell = (row: number, col: number) => {
+    if (row < 0 || row >= grid.row || col < 0 || col >= grid.col) return;
     if (gridState[row][col].action !== "default") return;
 
     const tempGridState = [...gridState];
@@ -112,10 +113,16 @@ const Home: NextPage = () => {
     if (row < 0 || col < 0 || row >= grid.row || col >= grid.col) return;
     if (gridState[row][col].action !== "default") return;
 
-    const tempGridState = [...gridState];
-
-    if (tempGridState[row][col].near == 0) {
+    if (gridState[row][col].near == 0) {
       revealCellClick(row, col);
+      revealCell(row - 1, col - 1);
+      revealCell(row - 1, col);
+      revealCell(row - 1, col + 1);
+      revealCell(row, col - 1);
+      revealCell(row, col + 1);
+      revealCell(row + 1, col - 1);
+      revealCell(row + 1, col);
+      revealCell(row + 1, col + 1);
     }
   };
 
