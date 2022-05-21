@@ -23,13 +23,22 @@ const Home: NextPage = () => {
       tempGridState.push(row);
     }
 
-    for (let i = 0; i < grid.row * grid.col * 0.2; i++) {
+    for (let i = 0; i < grid.row * grid.col * 0.15; i++) {
       const row = Math.floor(Math.random() * grid.row);
       const col = Math.floor(Math.random() * grid.col);
       tempGridState[row][col].type = "mine";
     }
 
     setGridState(tempGridState);
+  };
+
+  const revealCell = (row: number, col: number) => {
+    if (gridState[row][col].action !== "default") return;
+
+    const tempGridState = [...gridState];
+    tempGridState[row][col].action = "reveal";
+
+    if (tempGridState[row][col].type === "safe") setGridState(tempGridState);
   };
 
   useEffect(() => {
@@ -42,7 +51,12 @@ const Home: NextPage = () => {
         <title>Auto MineSweeper</title>
       </Head>
       <GridInput grid={grid} setGrid={setGrid} initGrid={initGrid} />
-      <MineGrid col={grid.col} row={grid.row} gridState={gridState} />
+      <MineGrid
+        col={grid.col}
+        row={grid.row}
+        gridState={gridState}
+        revealCell={revealCell}
+      />
     </>
   );
 };
