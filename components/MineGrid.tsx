@@ -16,9 +16,16 @@ interface Props {
   col: number;
   gridState: GridState[][];
   revealCell: (row: number, col: number) => void;
+  toggleFlag: (row: number, col: number) => void;
 }
 
-const MineGrid: NextPage<Props> = ({ row, col, gridState, revealCell }) => {
+const MineGrid: NextPage<Props> = ({
+  row,
+  col,
+  gridState,
+  revealCell,
+  toggleFlag,
+}) => {
   return (
     <>
       <div className="container">
@@ -82,6 +89,7 @@ const MineGrid: NextPage<Props> = ({ row, col, gridState, revealCell }) => {
                   action={gridState[i][j].action}
                   num={count}
                   revealCell={revealCell}
+                  toggleFlag={toggleFlag}
                 />
               );
             }

@@ -41,6 +41,16 @@ const Home: NextPage = () => {
     if (tempGridState[row][col].type === "safe") setGridState(tempGridState);
   };
 
+  const toggleFlag = (row: number, col: number) => {
+    if (gridState[row][col].action === "reveal") return;
+
+    const tempGridState = [...gridState];
+    tempGridState[row][col].action =
+      tempGridState[row][col].action === "flag" ? "default" : "flag";
+
+    setGridState(tempGridState);
+  };
+
   useEffect(() => {
     initGrid();
   }, [grid]);
@@ -56,6 +66,7 @@ const Home: NextPage = () => {
         row={grid.row}
         gridState={gridState}
         revealCell={revealCell}
+        toggleFlag={toggleFlag}
       />
     </>
   );

@@ -4,6 +4,7 @@ import { GridState } from "./MineGrid";
 interface Props extends GridState {
   num: number;
   revealCell: (row: number, col: number) => void;
+  toggleFlag: (row: number, col: number) => void;
 }
 
 const MineCell: NextPage<Props> = ({
@@ -13,6 +14,7 @@ const MineCell: NextPage<Props> = ({
   type,
   num,
   revealCell,
+  toggleFlag,
 }) => {
   const className = `cell ${action} ${type}`;
   return (
@@ -21,11 +23,26 @@ const MineCell: NextPage<Props> = ({
         <div
           className={className}
           onClick={() => type === "safe" && revealCell(row, col)}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            toggleFlag(row, col);
+          }}
         ></div>
       )}
       {action === "reveal" && (
         <div className={className}>
           {type === "mine" ? "*" : num === 0 ? "" : num}
+        </div>
+      )}
+      {action === "flag" && (
+        <div
+          className={className}
+          onContextMenu={(e) => {
+            e.preventDefault();
+            toggleFlag(row, col);
+          }}
+        >
+          P
         </div>
       )}
       {/* <div className={className}>
@@ -41,6 +58,7 @@ const MineCell: NextPage<Props> = ({
             text-align: center;
             font-size: 25px;
             line-height: 50px;
+            user-select: none;
           }
 
           .default {
@@ -49,6 +67,12 @@ const MineCell: NextPage<Props> = ({
 
           .default:hover {
             background-color: #eee;
+            cursor: pointer;
+          }
+
+          .flag {
+            color: #00ff0d;
+            background-color: #efefef;
           }
 
           // .mine {
