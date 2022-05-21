@@ -21,7 +21,7 @@ const MineCell: NextPage<Props> = ({
       {action === "default" && (
         <div
           className={className}
-          onClick={() => type === "safe" && revealCell(row, col)}
+          onClick={() => revealCell(row, col)}
           onContextMenu={(e) => {
             e.preventDefault();
             toggleFlag(row, col);

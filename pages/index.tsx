@@ -2,11 +2,13 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import MineGrid, { GridState } from "../components/MineGrid";
-import GridInput, { Grid } from "../components/GridInput";
+import GridInput, { GameStatus, Grid } from "../components/GridInput";
 
 const Home: NextPage = () => {
   const [grid, setGrid] = useState<Grid>({ row: 10, col: 10 });
   const [gridState, setGridState] = useState<GridState[][]>([]);
+  const [status, setStatus] = useState<GameStatus>("playing");
+  const [timer, setTimer] = useState<number>(0);
 
   const initGrid = () => {
     const tempGridState: GridState[][] = [];
@@ -85,13 +87,16 @@ const Home: NextPage = () => {
       }
     }
 
+    setStatus("playing");
+    setTimer(0);
     setGridState(tempGridState);
   };
 
   const revealCellClick = (row: number, col: number) => {
+    if (status !== "playing") return;
     revealCell(row, col);
 
-    if (gridState[row][col].near == 0) {
+    if (status === "playing" && gridState[row][col].near == 0) {
       revealNearCell(row - 1, col);
       revealNearCell(row, col - 1);
       revealNearCell(row, col + 1);
@@ -116,6 +121,20 @@ const Home: NextPage = () => {
     tempGridState[row][col].action = "reveal";
 
     if (tempGridState[row][col].type === "safe") setGridState(tempGridState);
+    else if (tempGridState[row][col].type === "mine") {
+      setStatus("lose");
+
+      // reveal all mine
+      for (let i = 0; i < grid.row; i++) {
+        for (let j = 0; j < grid.col; j++) {
+          if (gridState[i][j].type === "mine") {
+            tempGridState[i][j].action = "reveal";
+          }
+        }
+      }
+
+      setGridState(tempGridState);
+    }
   };
 
   const revealCellWithoutEmpty = (row: number, col: number) => {
@@ -152,12 +171,53 @@ const Home: NextPage = () => {
     initGrid();
   }, [grid]);
 
+  useEffect(() => {
+    const time = setInterval(() => {
+      if (status === "playing") {
+        setTimer((timer * 100 + 1) / 100);
+      }
+    }, 10);
+
+    return () => {
+      clearInterval(time);
+    };
+  }, [timer]);
+
+  useEffect(() => {
+    // Check win
+    if (status === "playing") {
+      let count = 0;
+      let mines = 0;
+
+      gridState.forEach((e) =>
+        e
+          .filter((v) => v.action === "reveal" && v.type === "safe")
+          .forEach((v) => count++)
+      );
+      gridState.forEach((e) => {
+        e.filter((v) => v.type === "mine").forEach((v) => mines++);
+      });
+
+      if (count === grid.row * grid.col - mines) {
+        setStatus("win");
+      }
+    }
+  }, [gridState]);
+
   return (
     <>
       <Head>
         <title>Auto MineSweeper</title>
       </Head>
-      <GridInput grid={grid} setGrid={setGrid} initGrid={initGrid} />
+      <GridInput
+        grid={grid}
+        setGrid={setGrid}
+        initGrid={initGrid}
+        leftMines={Math.floor(grid.row * grid.col * 0.15)}
+        status={status}
+        timer={timer}
+      />
+
       <MineGrid
         col={grid.col}
         row={grid.row}
