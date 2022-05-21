@@ -96,6 +96,15 @@ const Home: NextPage = () => {
       revealNearCell(row, col - 1);
       revealNearCell(row, col + 1);
       revealNearCell(row + 1, col);
+
+      revealCellWithoutEmpty(row - 1, col - 1);
+      revealCellWithoutEmpty(row - 1, col);
+      revealCellWithoutEmpty(row - 1, col + 1);
+      revealCellWithoutEmpty(row, col - 1);
+      revealCellWithoutEmpty(row, col + 1);
+      revealCellWithoutEmpty(row + 1, col - 1);
+      revealCellWithoutEmpty(row + 1, col);
+      revealCellWithoutEmpty(row + 1, col + 1);
     }
   };
 
@@ -109,20 +118,23 @@ const Home: NextPage = () => {
     if (tempGridState[row][col].type === "safe") setGridState(tempGridState);
   };
 
+  const revealCellWithoutEmpty = (row: number, col: number) => {
+    if (row < 0 || row >= grid.row || col < 0 || col >= grid.col) return;
+    if (gridState[row][col].action !== "default") return;
+    if (gridState[row][col].near === 0) return;
+
+    const tempGridState = [...gridState];
+    tempGridState[row][col].action = "reveal";
+
+    if (tempGridState[row][col].type === "safe") setGridState(tempGridState);
+  };
+
   const revealNearCell = (row: number, col: number) => {
     if (row < 0 || col < 0 || row >= grid.row || col >= grid.col) return;
     if (gridState[row][col].action !== "default") return;
 
     if (gridState[row][col].near == 0) {
       revealCellClick(row, col);
-      revealCell(row - 1, col - 1);
-      revealCell(row - 1, col);
-      revealCell(row - 1, col + 1);
-      revealCell(row, col - 1);
-      revealCell(row, col + 1);
-      revealCell(row + 1, col - 1);
-      revealCell(row + 1, col);
-      revealCell(row + 1, col + 1);
     }
   };
 

@@ -27,8 +27,8 @@ const MineCell: NextPage<Props> = ({
             toggleFlag(row, col);
           }}
         >
-          {type === "mine" && "*"}
-          {type === "safe" && (near === 0 ? "" : near)}
+          {/* {type === "mine" && "*"}
+          {type === "safe" && (near === 0 ? "" : near)} */}
         </div>
       )}
       {action === "reveal" && (
