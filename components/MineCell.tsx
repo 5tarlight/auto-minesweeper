@@ -2,7 +2,6 @@ import { NextPage } from "next";
 import { GridState } from "./MineGrid";
 
 interface Props extends GridState {
-  num: number;
   revealCell: (row: number, col: number) => void;
   toggleFlag: (row: number, col: number) => void;
 }
@@ -12,7 +11,7 @@ const MineCell: NextPage<Props> = ({
   row,
   action,
   type,
-  num,
+  near,
   revealCell,
   toggleFlag,
 }) => {
@@ -31,7 +30,7 @@ const MineCell: NextPage<Props> = ({
       )}
       {action === "reveal" && (
         <div className={className}>
-          {type === "mine" ? "*" : num === 0 ? "" : num}
+          {type === "mine" ? "*" : near === 0 ? "" : near}
         </div>
       )}
       {action === "flag" && (
@@ -45,8 +44,9 @@ const MineCell: NextPage<Props> = ({
           P
         </div>
       )}
+
       {/* <div className={className}>
-        {type === "mine" ? "*" : num === 0 ? "" : num}
+        {type === "mine" ? "*" : near === 0 ? "" : near}
       </div> */}
 
       <style jsx>

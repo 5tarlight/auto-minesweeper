@@ -18,6 +18,7 @@ const Home: NextPage = () => {
           col: j,
           type: "safe",
           action: "default",
+          near: -1,
         });
       }
       tempGridState.push(row);
@@ -27,6 +28,61 @@ const Home: NextPage = () => {
       const row = Math.floor(Math.random() * grid.row);
       const col = Math.floor(Math.random() * grid.col);
       tempGridState[row][col].type = "mine";
+    }
+
+    const { row, col } = grid;
+    for (let i = 0; i < row; i++) {
+      if (!tempGridState[i]) continue;
+      for (let j = 0; j < col; j++) {
+        if (
+          !tempGridState[i] ||
+          !tempGridState[i][j] ||
+          (i > 0 &&
+            (!tempGridState[i - 1] ||
+              !tempGridState[i - 1][j] ||
+              (j > 0 && !tempGridState[i - 1][j - 1]) ||
+              (j < col - 1 && !tempGridState[i - 1][j + 1]))) ||
+          (j > 0 && !tempGridState[i][j - 1]) ||
+          (j < col - 1 && !tempGridState[i][j + 1]) ||
+          (i < row - 1 &&
+            (!tempGridState[i + 1] ||
+              !tempGridState[i + 1][j] ||
+              (j > 0 && !tempGridState[i + 1][j - 1]) ||
+              (j < col - 1 && !tempGridState[i + 1][j + 1]))) ||
+          tempGridState[i][j].type === "mine"
+        )
+          continue;
+
+        let count = 0;
+
+        if (i > 0 && j > 0 && tempGridState[i - 1][j - 1].type === "mine")
+          // 왼쪽위
+          count++;
+        if (i > 0 && tempGridState[i - 1][j].type === "mine") count++; // 위
+        if (
+          i > 0 &&
+          j < col - 1 &&
+          tempGridState[i - 1][j + 1].type === "mine" // 오른쪽위
+        )
+          count++;
+        if (j > 0 && tempGridState[i][j - 1].type === "mine") count++; // 왼쪽
+        if (j < col - 1 && tempGridState[i][j + 1].type === "mine") count++; //오른쪽
+        if (
+          i < row - 1 &&
+          j > 0 &&
+          tempGridState[i + 1][j - 1].type === "mine" // 왼쪽아래
+        )
+          count++;
+        if (i < row - 1 && tempGridState[i + 1][j].type === "mine") count++; //아래
+        if (
+          i < row - 1 &&
+          j < col - 1 &&
+          tempGridState[i + 1][j + 1].type === "mine" // 오른쪽아래
+        )
+          count++;
+
+        tempGridState[i][j].near = count;
+      }
     }
 
     setGridState(tempGridState);
