@@ -4,6 +4,7 @@ import { GridState } from "./MineGrid";
 interface Props extends GridState {
   revealCell: (row: number, col: number) => void;
   toggleFlag: (row: number, col: number) => void;
+  revealRound: (row: number, col: number) => void;
 }
 
 const MineCell: NextPage<Props> = ({
@@ -14,6 +15,7 @@ const MineCell: NextPage<Props> = ({
   near,
   revealCell,
   toggleFlag,
+  revealRound,
 }) => {
   const className = `cell ${action} ${type}`;
   return (
@@ -32,7 +34,17 @@ const MineCell: NextPage<Props> = ({
         </div>
       )}
       {action === "reveal" && (
-        <div className={className}>
+        <div
+          className={className}
+          onContextMenu={
+            near !== 0
+              ? (e) => {
+                  e.preventDefault();
+                  revealRound(row, col);
+                }
+              : undefined
+          }
+        >
           {type === "mine" ? "*" : near === 0 ? "" : near}
         </div>
       )}

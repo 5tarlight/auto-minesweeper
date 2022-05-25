@@ -1,8 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import MineGrid, { GridState } from "../components/MineGrid";
 import GridInput, { GameStatus, Grid } from "../components/GridInput";
+import MineGrid, { GridState } from "../components/MineGrid";
 
 const Home: NextPage = () => {
   const [grid, setGrid] = useState<Grid>({ row: 10, col: 10 });
@@ -152,7 +152,7 @@ const Home: NextPage = () => {
     if (row < 0 || col < 0 || row >= grid.row || col >= grid.col) return;
     if (gridState[row][col].action !== "default") return;
 
-    if (gridState[row][col].near == 0) {
+    if (gridState[row][col].near === 0) {
       revealCellClick(row, col);
     }
   };
@@ -204,6 +204,58 @@ const Home: NextPage = () => {
     }
   }, [gridState]);
 
+  const revealOnFlag = (row: number, col: number) => {
+    if (row < 0 || col < 0 || row >= grid.row || col >= grid.col) return;
+    if (gridState[row][col].action !== "default") return;
+
+    revealCellClick(row, col);
+  };
+
+  const revealRound = (i: number, j: number) => {
+    const { row, col } = grid;
+    const near = gridState[i][j].near;
+
+    // Count near flags
+    let flags = 0;
+    if (i > 0 && j > 0 && gridState[i - 1][j - 1].action === "flag")
+      // 왼쪽위
+      flags++;
+    if (i > 0 && gridState[i - 1][j].action === "flag") flags++; // 위
+    if (
+      i > 0 &&
+      j < col - 1 &&
+      gridState[i - 1][j + 1].action === "flag" // 오른쪽위
+    )
+      flags++;
+    if (j > 0 && gridState[i][j - 1].action === "flag") flags++; // 왼쪽
+    if (j < col - 1 && gridState[i][j + 1].action === "flag") flags++; //오른쪽
+    if (
+      i < row - 1 &&
+      j > 0 &&
+      gridState[i + 1][j - 1].action === "flag" // 왼쪽아래
+    )
+      flags++;
+    if (i < row - 1 && gridState[i + 1][j].action === "flag") flags++; //아래
+    if (
+      i < row - 1 &&
+      j < col - 1 &&
+      gridState[i + 1][j + 1].action === "flag" // 오른쪽아래
+    )
+      flags++;
+
+    if (near !== flags) return;
+
+    // Reveal near cells
+    revealOnFlag(i - 1, j - 1);
+    revealOnFlag(i - 1, j);
+    revealOnFlag(i - 1, j + 1);
+    revealOnFlag(i, j - 1);
+    revealOnFlag(i, j + 1);
+    revealOnFlag(i + 1, j - 1);
+    revealOnFlag(i + 1, j);
+    revealOnFlag(i + 1, j + 1);
+  };
+
   return (
     <>
       <Head>
@@ -224,6 +276,7 @@ const Home: NextPage = () => {
         gridState={gridState}
         revealCell={revealCellClick}
         toggleFlag={toggleFlag}
+        revealRound={revealRound}
       />
     </>
   );

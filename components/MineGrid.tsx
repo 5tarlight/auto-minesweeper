@@ -18,6 +18,7 @@ interface Props {
   gridState: GridState[][];
   revealCell: (row: number, col: number) => void;
   toggleFlag: (row: number, col: number) => void;
+  revealRound: (row: number, col: number) => void;
 }
 
 const MineGrid: NextPage<Props> = ({
@@ -26,6 +27,7 @@ const MineGrid: NextPage<Props> = ({
   gridState,
   revealCell,
   toggleFlag,
+  revealRound,
 }) => {
   return (
     <>
@@ -47,6 +49,7 @@ const MineGrid: NextPage<Props> = ({
                   near={gridState[i][j].near}
                   revealCell={revealCell}
                   toggleFlag={toggleFlag}
+                  revealRound={revealRound}
                 />
               );
             }
